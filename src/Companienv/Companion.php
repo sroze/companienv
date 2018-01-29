@@ -108,7 +108,7 @@ class Companion
         $missingVariables = [];
 
         foreach ($variablesInReference as $variable) {
-            if ($variable->hasValue() && !isset($variablesInFile[$variable->getName()])) {
+            if (!isset($variablesInFile[$variable->getName()])) {
                 $missingVariables[] = $variable;
             }
         }
