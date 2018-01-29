@@ -2,8 +2,10 @@
 
 namespace Companienv;
 
+use Companienv\DotEnv\Attribute;
 use Companienv\DotEnv\Block;
 use Companienv\DotEnv\File;
+use Companienv\Extension\Chained;
 use Jackiedo\DotenvEditor\DotenvFormatter;
 use Jackiedo\DotenvEditor\DotenvWriter;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -19,13 +21,17 @@ class Companion
     private $reference;
     private $path;
 
-    public function __construct(InputInterface $input, OutputInterface $output, File $reference, string $path)
+    private $extension;
+
+    public function __construct(InputInterface $input, OutputInterface $output, File $reference, string $path, Extension $extension)
     {
         $this->input = $input;
         $this->output = $output;
 
         $this->reference = $reference;
         $this->path = $path;
+
+        $this->extension = $extension;
     }
 
     public function fillGaps()
@@ -50,13 +56,12 @@ class Companion
             return;
         }
 
-        $definedVariablesHash = $this->getDefinedVariablesHash();
         foreach ($this->reference->getBlocks() as $block) {
-            $this->fillBlockGaps($block, $missingVariables, $definedVariablesHash);
+            $this->fillBlockGaps($block, $missingVariables);
         }
     }
 
-    private function fillBlockGaps(Block $block, array $missingVariables, array $definedVariablesHash)
+    private function fillBlockGaps(Block $block, array $missingVariables)
     {
         $variablesInBlock = $block->getVariablesInBlock($missingVariables);
         if (count($variablesInBlock) == 0) {
@@ -71,15 +76,7 @@ class Companion
         ]);
 
         foreach ($block->getVariables() as $variable) {
-            $defaultValue = isset($definedVariablesHash[$variable->getName()]) ? $definedVariablesHash[$variable->getName()] : $variable->getValue();
-            $question = sprintf('<comment>%s</comment> ? ', $variable->getName());
-
-            if ($defaultValue) {
-                $question .= '('.$defaultValue.') ';
-            }
-
-            $value = $this->ask($question, $defaultValue);
-            $this->writeVariable($variable->getName(), $value);
+            $this->writeVariable($variable->getName(), $this->extension->getVariableValue($this, $block, $variable));
         }
     }
 
@@ -119,7 +116,7 @@ class Companion
         return $missingVariables;
     }
 
-    private function getDefinedVariablesHash()
+    public function getDefinedVariablesHash()
     {
         $variablesInFile = [];
         if (file_exists($this->path)) {
@@ -135,7 +132,7 @@ class Companion
         return in_array(strtolower($this->ask($question, 'y')), ['y', 'yes']);
     }
 
-    private function ask(string $question, string $default = null) : string
+    public function ask(string $question, string $default = null) : string
     {
         return (new QuestionHelper())->ask($this->input, $this->output, new Question($question, $default));
     }

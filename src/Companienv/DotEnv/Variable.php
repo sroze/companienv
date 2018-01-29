@@ -20,7 +20,7 @@ class Variable
 
     public function hasValue(): bool
     {
-        return $this->value !== null;
+        return !empty($this->value);
     }
 
     public function getValue()

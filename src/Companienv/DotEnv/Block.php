@@ -6,7 +6,11 @@ class Block
 {
     private $title;
     private $description;
+
+    /** @var Variable[] */
     private $variables;
+
+    /** @var Attribute[] */
     private $attributes;
 
     public function __construct(string $title, string $description = '', array $variables = [], array $attributes = [])
@@ -27,7 +31,7 @@ class Block
         $this->variables[] = $variable;
     }
 
-    public function addAttribute(string $attribute)
+    public function addAttribute(Attribute $attribute)
     {
         $this->attributes[] = $attribute;
     }
@@ -40,6 +44,14 @@ class Block
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    /**
+     * @return Attribute[]
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 
     /**
@@ -59,5 +71,21 @@ class Block
         return array_filter($variables, function (Variable $variable) use ($blockVariableNames) {
             return in_array($variable->getName(), $blockVariableNames);
         });
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Attribute|null
+     */
+    public function getAttribute(string $name)
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($attribute->getName() == $name) {
+                return $attribute;
+            }
+        }
+
+        return null;
     }
 }

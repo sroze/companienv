@@ -25,7 +25,7 @@ class Parser
                     // Ignore this comment.
                 } elseif ($block !== null) {
                     if (substr($line, 0, 2) == '#+') {
-                        $block->addAttribute(substr($line, 2));
+                        $block->addAttribute($this->parseAttribute(substr($line, 2)));
                     } else {
                         $block->appendToDescription(trim($line, '# '));
                     }
@@ -47,5 +47,17 @@ class Parser
         }
 
         return new File('', $blocks);
+    }
+
+    private function parseAttribute(string $string)
+    {
+        if (!preg_match('/^([a-z0-9-]+)\((([A-Z0-9_]+ ?)*)\)$/', $string, $matches)) {
+            throw new \RuntimeException(sprintf(
+                'Unable to parse the given attribute: %s',
+                $string
+            ));
+        }
+
+        return new Attribute($matches[1], explode(' ', $matches[2]));
     }
 }
