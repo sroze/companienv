@@ -127,7 +127,7 @@ class Companion
         return $variablesInFile;
     }
 
-    private function askConfirmation(string $question) : bool
+    public function askConfirmation(string $question) : bool
     {
         return in_array(strtolower($this->ask($question, 'y')), ['y', 'yes']);
     }
