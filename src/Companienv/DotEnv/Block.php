@@ -62,6 +62,13 @@ class Block
         return $this->variables;
     }
 
+    /**
+     * Return only the variables that are in the block.
+     *
+     * @param Variable[] $variables
+     *
+     * @return Variable[]
+     */
     public function getVariablesInBlock(array $variables)
     {
         $blockVariableNames = array_map(function (Variable $variable) {
@@ -71,6 +78,22 @@ class Block
         return array_filter($variables, function (Variable $variable) use ($blockVariableNames) {
             return in_array($variable->getName(), $blockVariableNames);
         });
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Variable|null
+     */
+    public function getVariable(string $name)
+    {
+        foreach ($this->variables as $variable) {
+            if ($variable->getName() == $name) {
+                return $variable;
+            }
+        }
+
+        return null;
     }
 
     /**
