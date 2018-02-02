@@ -4,6 +4,9 @@ namespace Companienv;
 
 use Companienv\DotEnv\Parser;
 use Companienv\Extension\Chained;
+use Companienv\Extension\FileToPropagate;
+use Companienv\Extension\RsaKeys;
+use Companienv\Extension\SslCertificate;
 use Companienv\Interaction\AskVariableValues;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -15,9 +18,15 @@ class Application
     /** @var Extension[] */
     private $extensions = [];
 
-    public function __construct(string $rootDirectory)
+    public function __construct(string $rootDirectory, array $extensions = null)
     {
         $this->rootDirectory = $rootDirectory;
+        $this->extensions = $extensions !== null ? $extensions : [
+            new SslCertificate($rootDirectory),
+            new RsaKeys($rootDirectory),
+            new FileToPropagate($rootDirectory),
+            new AskVariableValues(),
+        ];
     }
 
     public function run()
@@ -30,14 +39,12 @@ class Application
         $input = new ArgvInput();
         $output = new ConsoleOutput();
 
-        $this->extensions[] = new AskVariableValues();
-
         $companion = new Companion($input, $output, $reference, $configurationFile, new Chained($this->extensions));
         $companion->fillGaps();
     }
 
     public function registerExtension(Extension $extension)
     {
-        $this->extensions[] = $extension;
+        array_unshift($this->extensions, $extension);
     }
 }
