@@ -4,13 +4,19 @@ Your companion for `.env` files. Everybody knows about [12 factor](https://12fac
 A lot of frameworks such as Symfony [are using a `.env` file](https://symfony.com/doc/current/configuration.html#the-env-file-environment-variables) to configure the application,
 but we don't have anything to help users to complete their local `.env` file.
 
-Companienv will helps you manage the .env files from a .env.dist version. It can read default values, identify missing variables but also generate credentials such as secrets and even propagate files such as public/private key pairs. 
+Companienv will helps you manage the `.env` files, from a reference `.env.dist` version in your code repository. Companienv can:
+
+- Read and populate default values
+- Identify and ask only missing variables
+- Propagate files (copy files from somewhere else)
+- Generate public/private keys
+- Generate SSL certificates
+- Much more, via your own extension
 
 ## Usage
 
 1. Create your default `.env.dist` file, which is in your version control
-
-2. Require `companienv` as your project dependency:
+2. Require `sroze/companienv` as your project dependency:
 ```
 composer req sroze/companienv
 ```
@@ -18,6 +24,23 @@ composer req sroze/companienv
 3. Run your companion:
 ```
 vendor/bin/companienv
+```
+
+### Composer automation
+
+You can run Companienv automatically after `composer install` or `composer update` commands by configuring the scripts in your `composer.json` file:
+
+```json
+{
+    "scripts": {
+        "post-install-cmd": [
+            "Companienv\\Composer\\ScriptHandler::run"
+        ],
+        "post-update-cmd": [
+            "Companienv\\Composer\\ScriptHandler::run"
+        ]
+    }
+}
 ```
 
 ## The `.env.dist` file
