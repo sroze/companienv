@@ -16,22 +16,18 @@ class NativePhpFileSystem implements FileSystem
         file_put_contents($this->realpath($path), $contents);
     }
 
-    public function exists($path)
+    public function exists($path, bool $relative = true)
     {
-        return file_exists($this->realpath($path));
+        return file_exists($relative ? $this->realpath($path) : $path);
     }
 
-    public function getContents($path)
+    public function getContents($path, bool $relative = true)
     {
-        return file_get_contents($this->realpath($path));
+        return file_get_contents($relative ? $this->realpath($path) : $path);
     }
 
     public function realpath($path)
     {
-        if (strpos($path, DIRECTORY_SEPARATOR) === 0) {
-            return $path;
-        }
-
         return $this->root.DIRECTORY_SEPARATOR.$path;
     }
 }

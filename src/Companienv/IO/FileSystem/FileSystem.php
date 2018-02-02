@@ -6,9 +6,9 @@ interface FileSystem
 {
     public function write($path, string $contents);
 
-    public function exists($path);
+    public function exists($path, bool $relative = true);
 
-    public function getContents($path);
+    public function getContents($path, bool $relative = true);
 
     public function realpath($path);
 }

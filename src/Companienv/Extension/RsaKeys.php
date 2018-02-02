@@ -39,13 +39,14 @@ class RsaKeys implements Extension
             return null;
         }
 
+        $fileSystem = $companion->getFileSystem();
         $passPhrase = $companion->ask('Enter pass phrase to protect the keys: ');
         $privateKeyPath = $block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue();
         $publicKeyPath = $block->getVariable($publicKeyVariableName = $attribute->getVariableNames()[1])->getValue();
 
         try {
-            (new Process(sprintf('openssl genrsa -out %s -aes256 -passout pass:%s 4096', $privateKeyPath, $passPhrase)))->mustRun();
-            (new Process(sprintf('openssl rsa -pubout -in %s -out %s -passin pass:%s', $privateKeyPath, $publicKeyPath, $passPhrase)))->mustRun();
+            (new Process(sprintf('openssl genrsa -out %s -aes256 -passout pass:%s 4096', $fileSystem->realpath($privateKeyPath), $passPhrase)))->mustRun();
+            (new Process(sprintf('openssl rsa -pubout -in %s -out %s -passin pass:%s', $fileSystem->realpath($privateKeyPath), $fileSystem->realpath($publicKeyPath), $passPhrase)))->mustRun();
         } catch (\Symfony\Component\Process\Exception\RuntimeException $e) {
             throw new \RuntimeException('Could not have generated the RSA public/private key', $e->getCode(), $e);
         }
