@@ -33,7 +33,7 @@ class RsaKeys implements Extension
 
         if (!$companion->askConfirmation(sprintf(
             'Variables %s represents an RSA public/private key. Do you want to automatically generate them? (y) ',
-            implode(' and ', array_map(function($variable) {
+            implode(' and ', array_map(function ($variable) {
                 return '<comment>'.$variable.'</comment>';
             }, $attribute->getVariableNames()))
         ))) {

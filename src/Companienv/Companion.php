@@ -116,7 +116,7 @@ class Companion
                 $currentValue = isset($variablesInFile[$variable->getName()]) ? $variablesInFile[$variable->getName()] : null;
 
                 if ($this->extension->isVariableRequiringValue($this, $block, $variable, $currentValue)) {
-                   $missingVariables[$variable->getName()] = new MissingVariable($variable, $currentValue);
+                    $missingVariables[$variable->getName()] = new MissingVariable($variable, $currentValue);
                 }
             }
         }
@@ -142,6 +142,12 @@ class Companion
 
     public function ask(string $question, string $default = null) : string
     {
-        return (new QuestionHelper())->ask($this->input, $this->output, new Question($question, $default));
+        $answer = (new QuestionHelper())->ask($this->input, $this->output, new Question($question, $default));
+
+        if (!$answer) {
+            return $this->ask($question, $default);
+        }
+
+        return $answer;
     }
 }
