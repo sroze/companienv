@@ -5,6 +5,7 @@ namespace Companienv;
 use Companienv\DotEnv\Attribute;
 use Companienv\DotEnv\Block;
 use Companienv\DotEnv\File;
+use Companienv\DotEnv\MissingVariable;
 use Companienv\Extension\Chained;
 use Jackiedo\DotenvEditor\DotenvFormatter;
 use Jackiedo\DotenvEditor\DotenvWriter;
@@ -76,7 +77,9 @@ class Companion
         ]);
 
         foreach ($block->getVariables() as $variable) {
-            $this->writeVariable($variable->getName(), $this->extension->getVariableValue($this, $block, $variable));
+            if (isset($missingVariables[$variable->getName()])) {
+                $this->writeVariable($variable->getName(), $this->extension->getVariableValue($this, $block, $variable));
+            }
         }
     }
 
@@ -100,6 +103,9 @@ class Companion
         $writer->save($this->path);
     }
 
+    /**
+     * @return MissingVariable[]
+     */
     private function getVariablesRequiringValues()
     {
         $variablesInFile = $this->getDefinedVariablesHash();
@@ -110,7 +116,7 @@ class Companion
                 $currentValue = isset($variablesInFile[$variable->getName()]) ? $variablesInFile[$variable->getName()] : null;
 
                 if ($this->extension->isVariableRequiringValue($this, $block, $variable, $currentValue)) {
-                   $missingVariables[] = $variable;
+                   $missingVariables[$variable->getName()] = new MissingVariable($variable, $currentValue);
                 }
             }
         }
