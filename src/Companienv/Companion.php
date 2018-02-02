@@ -36,7 +36,7 @@ class Companion
 
     public function fillGaps()
     {
-        $missingVariables = $this->getMissingVariables();
+        $missingVariables = $this->getVariablesRequiringValues();
         if (count($missingVariables) == 0) {
             return;
         }
@@ -100,16 +100,18 @@ class Companion
         $writer->save($this->path);
     }
 
-    private function getMissingVariables()
+    private function getVariablesRequiringValues()
     {
         $variablesInFile = $this->getDefinedVariablesHash();
-
-        $variablesInReference = $this->reference->getAllVariables();
         $missingVariables = [];
 
-        foreach ($variablesInReference as $variable) {
-            if (!isset($variablesInFile[$variable->getName()])) {
-                $missingVariables[] = $variable;
+        foreach ($this->reference->getBlocks() as $block) {
+            foreach ($block->getVariables() as $variable) {
+                $currentValue = isset($variablesInFile[$variable->getName()]) ? $variablesInFile[$variable->getName()] : null;
+
+                if ($this->extension->isVariableRequiringValue($this, $block, $variable, $currentValue)) {
+                   $missingVariables[] = $variable;
+                }
             }
         }
 

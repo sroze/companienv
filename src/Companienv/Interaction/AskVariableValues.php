@@ -9,6 +9,9 @@ use Companienv\Extension;
 
 class AskVariableValues implements Extension
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getVariableValue(Companion $companion, Block $block, Variable $variable)
     {
         $definedVariablesHash = $companion->getDefinedVariablesHash();
@@ -20,5 +23,13 @@ class AskVariableValues implements Extension
         }
 
         return $companion->ask($question, $defaultValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
+    {
+        return empty($currentValue);
     }
 }

@@ -13,6 +13,9 @@ class File
         $this->blocks = $blocks;
     }
 
+    /**
+     * @return Block[]
+     */
     public function getBlocks(): array
     {
         return $this->blocks;

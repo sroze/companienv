@@ -35,4 +35,18 @@ class Chained implements Extension
 
         return null;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
+    {
+        foreach ($this->extensions as $extension) {
+            if ($extension->isVariableRequiringValue($companion, $block, $variable, $currentValue)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
