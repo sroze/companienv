@@ -13,12 +13,12 @@ class InMemoryFileSystem implements FileSystem
         $this->files[$path] = $contents;
     }
 
-    public function exists($path)
+    public function exists($path, bool $relative = true)
     {
         return isset($this->files[$path]);
     }
 
-    public function getContents($path)
+    public function getContents($path, bool $relative = true)
     {
         if (!$this->exists($path)) {
             return false;
