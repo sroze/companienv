@@ -8,6 +8,7 @@ Companienv will helps you manage the `.env` files, from a reference `.env.dist` 
 
 - Read and populate default values
 - Identify and ask only missing variables
+- Ask variables [only if matching some conditions](#only-if-extension)
 - [Propagate files](#file-to-propagate-extension) (copy files from somewhere else)
 - Generate [public/private RSA keys](#rsa-pair-extension)
 - Generate [SSL certificates](#ssl-certificate-extension)
@@ -91,9 +92,27 @@ AND_OTHER_VARIABLES=
 
 ## Built-in extensions
 
+- [Only if ...](#only-if-extension)
 - [Propagate file](#file-to-propagate-extension)
 - [RSA keys](#rsa-pair-extension)
 - [SSL certificate](#ssl-certificate-extension)
+
+### `only-if` extension
+
+Some of the blocks of your `.env` file might not even be relevant if some other variable was disabling a given feature.
+
+**Example:** This will only ask for the `INTERCOM_APPLICATION_ID` variable if `INTERCOM_ENABLED` has the value (current 
+or entered by the user) `true`.
+```
+## Support & Feedback
+# If you would like to allow your users to get some support from you, give you some feedback and this
+# sort of things, select the integrations you'd like.
+#
+#+only-if(INTERCOM_APPLICATION_ID):(INTERCOM_ENABLED=true)
+#
+INTERCOM_ENABLED=false
+INTERCOM_APPLICATION_ID=none
+```
 
 ### `file-to-propagate` extension
 
