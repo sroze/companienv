@@ -11,19 +11,13 @@ use Symfony\Component\Process\Process;
 class RsaKeys implements Extension
 {
     private $populatedVariables = [];
-    private $rootDirectory;
-
-    public function __construct(string $rootDirectory)
-    {
-        $this->rootDirectory = $rootDirectory;
-    }
 
     /**
      * {@inheritdoc}
      */
     public function getVariableValue(Companion $companion, Block $block, Variable $variable)
     {
-        if (null === ($attribute = $block->getAttribute('rsa-pair')) || !in_array($variable->getName(), $attribute->getVariableNames())) {
+        if (null === ($attribute = $block->getAttribute('rsa-pair', $variable))) {
             return null;
         }
 
@@ -68,13 +62,13 @@ class RsaKeys implements Extension
      */
     public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
     {
-        if (null === ($attribute = $block->getAttribute('rsa-pair')) || !in_array($variable->getName(), $attribute->getVariableNames())) {
+        if (null === ($attribute = $block->getAttribute('rsa-pair', $variable))) {
             return false;
         }
 
-        $privateKeyPath = $this->rootDirectory.DIRECTORY_SEPARATOR.$block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue();
-        $publicKeyPath = $this->rootDirectory.DIRECTORY_SEPARATOR.$block->getVariable($publicKeyVariableName = $attribute->getVariableNames()[1])->getValue();
+        $fileSystem = $companion->getFileSystem();
 
-        return !file_exists($privateKeyPath) || !file_exists($publicKeyPath);
+        return !$fileSystem->exists($block->getVariable($attribute->getVariableNames()[0])->getValue())
+            || !$fileSystem->exists($block->getVariable($attribute->getVariableNames()[1])->getValue());
     }
 }

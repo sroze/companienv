@@ -2,37 +2,29 @@
 
 namespace Companienv;
 
-use Companienv\DotEnv\Attribute;
 use Companienv\DotEnv\Block;
-use Companienv\DotEnv\File;
 use Companienv\DotEnv\MissingVariable;
-use Companienv\Extension\Chained;
+use Companienv\DotEnv\Parser;
+use Companienv\IO\FileSystem\FileSystem;
+use Companienv\IO\Interaction;
 use Jackiedo\DotenvEditor\DotenvFormatter;
 use Jackiedo\DotenvEditor\DotenvWriter;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 
 class Companion
 {
-    private $input;
-    private $output;
-
+    private $fileSystem;
+    private $interaction;
     private $reference;
-    private $path;
-
     private $extension;
+    private $envFileName;
 
-    public function __construct(InputInterface $input, OutputInterface $output, File $reference, string $path, Extension $extension)
+    public function __construct(FileSystem $fileSystem, Interaction $interaction, Extension $extension, string $envFileName = '.env', string $distFileName = '.env.dist')
     {
-        $this->input = $input;
-        $this->output = $output;
-
-        $this->reference = $reference;
-        $this->path = $path;
-
+        $this->fileSystem = $fileSystem;
+        $this->interaction = $interaction;
         $this->extension = $extension;
+        $this->reference = (new Parser())->parse($fileSystem, $distFileName);
+        $this->envFileName = $envFileName;
     }
 
     public function fillGaps()
@@ -42,13 +34,13 @@ class Companion
             return;
         }
 
-        $this->output->writeln(sprintf(
+        $this->interaction->writeln(sprintf(
             'It looks like you are missing some configuration (%d variables). I will help you to sort this out.',
             count($missingVariables)
         ));
 
         if (!$this->askConfirmation('<info>Let\'s fix this? (y) </info>')) {
-            $this->output->writeln([
+            $this->interaction->writeln([
                 '',
                 '<comment>I let you think about it then. Re-run the command to get started again.</comment>',
                 ''
@@ -69,7 +61,7 @@ class Companion
             return;
         }
 
-        $this->output->writeln([
+        $this->interaction->writeln([
             '',
             '<info>'.$block->getTitle().'</info>',
             $block->getDescription(),
@@ -85,14 +77,14 @@ class Companion
 
     private function writeVariable(string $name, string $value)
     {
-        if (!file_exists($this->path)) {
-            file_put_contents($this->path, '');
+        if (!$this->fileSystem->exists($this->envFileName)) {
+            $this->fileSystem->write($this->envFileName, '');
         }
 
         $variablesInFileHash = $this->getDefinedVariablesHash();
 
         $writer = new DotenvWriter(new DotenvFormatter());
-        $writer->setBuffer(file_get_contents($this->path));
+        $writer->setBuffer($this->fileSystem->getContents($this->envFileName));
 
         if (isset($variablesInFileHash[$name])) {
             $writer->updateSetter($name, $value);
@@ -100,7 +92,7 @@ class Companion
             $writer->appendSetter($name, $value);
         }
 
-        $writer->save($this->path);
+        $this->fileSystem->write($this->envFileName, $writer->getBuffer());
     }
 
     /**
@@ -127,9 +119,9 @@ class Companion
     public function getDefinedVariablesHash()
     {
         $variablesInFile = [];
-        if (file_exists($this->path)) {
+        if ($this->fileSystem->exists($this->envFileName)) {
             $dotEnv = new \Symfony\Component\Dotenv\Dotenv();
-            $variablesInFile = $dotEnv->parse(file_get_contents($this->path), $this->path);
+            $variablesInFile = $dotEnv->parse($this->fileSystem->getContents($this->envFileName), $this->envFileName);
         }
 
         return $variablesInFile;
@@ -137,17 +129,16 @@ class Companion
 
     public function askConfirmation(string $question) : bool
     {
-        return in_array(strtolower($this->ask($question, 'y')), ['y', 'yes']);
+        return $this->interaction->askConfirmation($question);
     }
 
     public function ask(string $question, string $default = null) : string
     {
-        $answer = (new QuestionHelper())->ask($this->input, $this->output, new Question($question, $default));
+        return $this->interaction->ask($question, $default);
+    }
 
-        if (!$answer) {
-            return $this->ask($question, $default);
-        }
-
-        return $answer;
+    public function getFileSystem(): FileSystem
+    {
+        return $this->fileSystem;
     }
 }

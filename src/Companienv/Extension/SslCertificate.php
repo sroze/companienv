@@ -11,19 +11,13 @@ use Symfony\Component\Process\Process;
 class SslCertificate implements Extension
 {
     private $populatedVariables = [];
-    private $rootDirectory;
-
-    public function __construct(string $rootDirectory)
-    {
-        $this->rootDirectory = $rootDirectory;
-    }
 
     /**
      * {@inheritdoc}
      */
     public function getVariableValue(Companion $companion, Block $block, Variable $variable)
     {
-        if (null === ($attribute = $block->getAttribute('ssl-certificate')) || !in_array($variable->getName(), $attribute->getVariableNames())) {
+        if (null === ($attribute = $block->getAttribute('ssl-certificate', $variable))) {
             return null;
         }
 
@@ -52,8 +46,8 @@ class SslCertificate implements Extension
         try {
             (new Process(sprintf(
                 'openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout %s -out %s -subj "/C=SS/ST=SS/L=SelfSignedCity/O=SelfSignedOrg/CN=%s"',
-                $this->realpath($privateKeyPath),
-                $this->realpath($certificateKeyPath),
+                $companion->getFileSystem()->realpath($privateKeyPath),
+                $companion->getFileSystem()->realpath($certificateKeyPath),
                 $domainName
             )))->mustRun();
         } catch (\Symfony\Component\Process\Exception\RuntimeException $e) {
@@ -72,18 +66,13 @@ class SslCertificate implements Extension
      */
     public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
     {
-        if (null === ($attribute = $block->getAttribute('ssl-certificate')) || !in_array($variable->getName(), $attribute->getVariableNames())) {
+        if (null === ($attribute = $block->getAttribute('ssl-certificate', $variable))) {
             return false;
         }
 
-        $privateKeyPath = $this->realpath($block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue());
-        $certificateKeyPath = $this->realpath($block->getVariable($attribute->getVariableNames()[1])->getValue());
+        $fileSystem = $companion->getFileSystem();
 
-        return !file_exists($privateKeyPath) || !file_exists($certificateKeyPath);
-    }
-
-    private function realpath($path)
-    {
-        return $this->rootDirectory.DIRECTORY_SEPARATOR.$path;
+        return !$fileSystem->exists($block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue())
+            || !$fileSystem->exists($block->getVariable($attribute->getVariableNames()[1])->getValue());
     }
 }
