@@ -98,13 +98,20 @@ class Block
 
     /**
      * @param string $name
+     * @param Variable|null $forVariable Will return only attribute for the given variables
      *
      * @return Attribute|null
      */
-    public function getAttribute(string $name)
+    public function getAttribute(string $name, Variable $forVariable = null)
     {
         foreach ($this->attributes as $attribute) {
-            if ($attribute->getName() == $name) {
+            if (
+                $attribute->getName() == $name
+                && (
+                    $forVariable === null
+                    || in_array($forVariable->getName(), $attribute->getVariableNames())
+                )
+            ) {
                 return $attribute;
             }
         }

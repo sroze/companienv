@@ -26,7 +26,15 @@
       "Companienv": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-0": {
+      "Companienv": "tests/"
+    }
+  },
   "bin": [
     "bin/companienv"
-  ]
+  ],
+  "require-dev": {
+    "behat/behat": "^3.4"
+  }
 }

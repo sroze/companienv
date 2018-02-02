@@ -2,15 +2,17 @@
 
 namespace Companienv\DotEnv;
 
+use Companienv\IO\FileSystem\FileSystem;
+
 class Parser
 {
-    public function parse(string $path) : File
+    public function parse(FileSystem $fileSystem, string $path) : File
     {
         $blocks = [];
 
         /** @var Block|null $block */
         $block = null;
-        foreach (file($path) as $number => $line) {
+        foreach (explode("\n", $fileSystem->getContents($path)) as $number => $line) {
             $line = trim($line);
             if (empty($line)) {
                 continue;
@@ -51,13 +53,36 @@ class Parser
 
     private function parseAttribute(string $string)
     {
-        if (!preg_match('/^([a-z0-9-]+)\((([A-Z0-9_]+ ?)*)\)$/', $string, $matches)) {
+        $variableNameRegex = '[A-Z0-9_]+';
+        $valueRegex = '[^\) ]+';
+
+        if (!preg_match('/^([a-z0-9-]+)\((('.$variableNameRegex.' ?)*)\)(:\((('.$variableNameRegex.'='.$valueRegex.' ?)*)\))?$/', $string, $matches)) {
             throw new \RuntimeException(sprintf(
                 'Unable to parse the given attribute: %s',
                 $string
             ));
         }
 
-        return new Attribute($matches[1], explode(' ', $matches[2]));
+        return new Attribute($matches[1], explode(' ', $matches[2]), isset($matches[6]) ? $this->dotEnvMappingToKeyBasedMapping($matches[6]) : []);
+    }
+
+    private function dotEnvMappingToKeyBasedMapping(string $dotEnvMapping)
+    {
+        $mapping = [];
+        $envMappings = explode(' ', $dotEnvMapping);
+
+        foreach ($envMappings as $envMapping) {
+            if (false === strpos($envMapping, '=')) {
+                throw new \RuntimeException(sprintf(
+                    'Could not parse attribute mapping "%s"',
+                    $dotEnvMapping
+                ));
+            }
+
+            list($key, $value) = explode('=', $envMapping);
+            $mapping[$key] = $value;
+        }
+
+        return $mapping;
     }
 }

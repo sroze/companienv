@@ -1,0 +1,26 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+matrix:
+  include:
+    - php: 7.1
+      env: dependencies=lowest
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - composer self-update
+
+before_script:
+  - travis_retry composer install --no-interaction
+  - if [ "$dependencies" = "lowest" ]; then travis_retry composer update --prefer-lowest --prefer-stable -n; fi;
+
+script:
+  - vendor/bin/behat -fprogress
