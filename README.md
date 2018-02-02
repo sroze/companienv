@@ -45,7 +45,14 @@ You can run Companienv automatically after `composer install` or `composer updat
 ## The `.env.dist` file
 
 **All your configuration is directly in your `.env.dist` file, as comments.** The configuration is divided in blocks that 
-will be displayed to the user for a greater understanding of the configuration.
+will be displayed to the user for a greater understanding of the configuration. Here are the fondations for Companienv:
+
+- **Blocks.** They logically group variables together. They are defined by a title (line starting with a double-comment 
+  `##`) and a description (every comment line directly bellow)
+- **Attributes.** Defined by a line starting with `#+`, an attribute is associated to one or multiple variables. These 
+  attributes are the entrypoint for extensions. In the example above, it says that the `JWT_*` variables are associated
+  with an RSA key pair, so Companienv will automatically offer the user to generate one for them.
+- **Comments.** Lines starting by `#~` will be ignored by Companienv.
 
 *Example of `.env.dist.` file*
 ```
@@ -81,16 +88,6 @@ JWT_PRIVATE_KEY_PASS_PHRASE=
 # With its (optional) description
 AND_OTHER_VARIABLES=
 ```
-
-Via its comments, the file is composed of multiple elements. Here are the building blocks
-of Companienv:
-
-- **Blocks.** They logically group variables together. They are defined by a title (line starting with a double-comment 
-  `##`) and a description (every comment line directly bellow)
-- **Attributes.** Defined by a line starting with `#+`, an attribute is associated to one or multiple variables. These 
-  attributes are the entrypoint for extensions. In the example above, it says that the `JWT_*` variables are associated
-  with an RSA key pair, so Companienv will automatically offer the user to generate one for them.
-- **Comments.** Lines starting by `#~` will be ignored by Companienv.
 
 ## Built-in extensions
 
