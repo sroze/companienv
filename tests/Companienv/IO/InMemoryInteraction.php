@@ -26,6 +26,7 @@ class InMemoryInteraction implements Interaction
     public function ask(string $question, string $default = null): string
     {
         $normalizedKey = trim(strip_tags($question));
+        $this->buffer .= trim(strip_tags($question))."\n";
 
         if (isset($this->answers[$normalizedKey])) {
             return $this->answers[$normalizedKey];

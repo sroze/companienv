@@ -64,9 +64,13 @@ class Companion
         $this->interaction->writeln([
             '',
             '<info>'.$block->getTitle().'</info>',
-            $block->getDescription(),
-            ''
         ]);
+
+        if (!empty($description = $block->getDescription())) {
+            $this->interaction->writeln($description);
+        }
+
+        $this->interaction->writeln('');
 
         foreach ($block->getVariables() as $variable) {
             if (isset($missingVariables[$variable->getName()])) {
@@ -84,7 +88,8 @@ class Companion
         $variablesInFileHash = $this->getDefinedVariablesHash();
 
         $writer = new DotenvWriter(new DotenvFormatter());
-        $writer->setBuffer($this->fileSystem->getContents($this->envFileName));
+        $fileContents = $this->fileSystem->getContents($this->envFileName);
+        $writer->setBuffer($fileContents);
 
         if (isset($variablesInFileHash[$name])) {
             $writer->updateSetter($name, $value);

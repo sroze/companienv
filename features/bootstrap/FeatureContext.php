@@ -12,6 +12,7 @@ use Symfony\Component\Process\Process;
 
 class FeatureContext implements Context
 {
+    private $interaction;
     private $fileSystem;
     private $companion;
 
@@ -35,13 +36,13 @@ class FeatureContext implements Context
     {
         $this->companion = new Companion(
             $this->fileSystem,
-            $interaction = new InMemoryInteraction($table->getRowsHash()),
+            $this->interaction = new InMemoryInteraction($table->getRowsHash()),
             new Chained(Application::defaultExtensions())
         );
 
         $this->companion->fillGaps();
 
-        echo $interaction->getBuffer();
+        echo $this->interaction->getBuffer();
     }
 
     /**
@@ -56,6 +57,22 @@ class FeatureContext implements Context
             throw new \RuntimeException(sprintf(
                 'Found following instead: %s',
                 $found
+            ));
+        }
+    }
+
+    /**
+     * @Then the companion's output will look like that:
+     */
+    public function theCompanionsOutputWillLookLikeThat(PyStringNode $string)
+    {
+        $found = strip_tags(trim($this->interaction->getBuffer()));
+        $expected = trim($string->getRaw());
+
+        if ($found != $expected) {
+            throw new \RuntimeException(sprintf(
+                'Found the following instead: %s',
+                function_exists('xdiff_string_diff') ? xdiff_string_diff($expected, $found) : $found
             ));
         }
     }
