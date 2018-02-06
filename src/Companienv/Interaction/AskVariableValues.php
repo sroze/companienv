@@ -30,6 +30,8 @@ class AskVariableValues implements Extension
      */
     public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
     {
-        return empty($currentValue);
+        return $currentValue === null || (
+            $currentValue === '' && $variable->getValue() !== ''
+        );
     }
 }
