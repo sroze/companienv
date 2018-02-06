@@ -32,23 +32,22 @@ class Parser
                         $block->appendToDescription(trim($line, '# '));
                     }
                 }
-            } else {
-                // This is a variable
-                $sides = explode('=', $line);
-                if (count($sides) != 2) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'The line %d of the file %s is invalid: %s',
-                        $number,
-                        $path,
-                        $line
-                    ));
-                }
-
+            } elseif (false !== ($firstEquals = strpos($line, '='))) {
                 if (null === $block) {
                     $blocks[] = $block = new Block();
                 }
 
-                $block->addVariable(new Variable($sides[0], $sides[1]));
+                $block->addVariable(new Variable(
+                    substr($line, 0, $firstEquals),
+                    substr($line, $firstEquals + 1)
+                ));
+            } else {
+                throw new \InvalidArgumentException(sprintf(
+                    'The line %d of the file %s is invalid: %s',
+                    $number,
+                    $path,
+                    $line
+                ));
             }
         }
 

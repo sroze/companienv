@@ -49,8 +49,8 @@ Feature:
     MY_VARIABLE=
     """
     When I run the companion with the following answers:
-      | Let's fix this? (y) | y        |
-      | MY_VARIABLE ?       |          |
+      | Let's fix this? (y)           | y        |
+      | MY_VARIABLE ? (default-value) |          |
     And the file ".env" should contain:
     """
     MY_VARIABLE=
@@ -88,4 +88,22 @@ Feature:
     And the file ".env" should contain:
     """
     MY_VARIABLE=0
+    """
+
+  Scenario: It supports variables containing equals sign
+    Given the file ".env.dist" contains:
+    """
+    ## Something
+    A_BASE64_VALUE=abc123=
+    """
+    And the file ".env" contains:
+    """
+    A_BASE64_VALUE=
+    """
+    When I run the companion with the following answers:
+      | Let's fix this? (y)        | y       |
+      | A_BASE64_VALUE ? (abc123=) | abc123= |
+    And the file ".env" should contain:
+    """
+    A_BASE64_VALUE=abc123=
     """
