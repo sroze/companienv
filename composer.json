@@ -16,9 +16,9 @@
   ],
   "require": {
     "php": ">=7.0",
-    "symfony/console": "~4.0",
-    "symfony/dotenv": "~4.0",
-    "symfony/process": "~4.0",
+    "symfony/console": "~3.0 || ~4.0",
+    "symfony/dotenv": "~3.4 || ~4.0",
+    "symfony/process": "~3.0 || ~4.0",
     "jackiedo/dotenv-editor": "~1.0"
   },
   "autoload": {
@@ -36,6 +36,7 @@
   ],
   "require-dev": {
     "behat/behat": "^3.4",
-    "phpspec/phpspec": "^4.3"
+    "phpspec/phpspec": "^4.3",
+    "composer/composer": "1.0.*@dev"
   }
 }

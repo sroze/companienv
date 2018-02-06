@@ -39,8 +39,8 @@ class Application extends ConsoleApplication
 
                 $this->callable = $callable;
 
-                $this->addOption('dist-file', null, InputOption::VALUE_REQUIRED, 'Name of the file used as reference', '.env.dist');
-                $this->addOption('file', null, InputOption::VALUE_REQUIRED, 'Name of the file used for the values', '.env');
+                $this->addOption('dist-file', null, InputOption::VALUE_REQUIRED, 'Name of the file used as reference', Application::defaultDistributionFile());
+                $this->addOption('file', null, InputOption::VALUE_REQUIRED, 'Name of the file used for the values', Application::defaultFile());
             }
 
             protected function execute(InputInterface $input, OutputInterface $output)
@@ -80,5 +80,15 @@ class Application extends ConsoleApplication
             new FileToPropagate(),
             new AskVariableValues(),
         ];
+    }
+
+    public static function defaultFile()
+    {
+        return '.env';
+    }
+
+    public static function defaultDistributionFile()
+    {
+        return '.env.dist';
     }
 }
