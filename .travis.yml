@@ -23,4 +23,5 @@ before_script:
   - if [ "$dependencies" = "lowest" ]; then travis_retry composer update --prefer-lowest --prefer-stable -n; fi;
 
 script:
+  - vendor/bin/phpspec run
   - vendor/bin/behat -fprogress

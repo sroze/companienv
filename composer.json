@@ -35,6 +35,7 @@
     "bin/companienv"
   ],
   "require-dev": {
-    "behat/behat": "^3.4"
+    "behat/behat": "^3.4",
+    "phpspec/phpspec": "^4.3"
   }
 }

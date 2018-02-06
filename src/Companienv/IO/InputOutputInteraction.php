@@ -27,7 +27,7 @@ class InputOutputInteraction implements Interaction
     {
         $answer = (new QuestionHelper())->ask($this->input, $this->output, new Question($question, $default));
 
-        if (!$answer) {
+        if (null === $answer || ('' === $answer && $default !== null)) {
             return $this->ask($question, $default);
         }
 
