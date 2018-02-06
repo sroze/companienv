@@ -61,10 +61,12 @@ class Companion
             return;
         }
 
-        $this->interaction->writeln([
-            '',
-            '<info>'.$block->getTitle().'</info>',
-        ]);
+        if (!empty($title = $block->getTitle())) {
+            $this->interaction->writeln([
+                '',
+                '<info>' . $block->getTitle() . '</info>',
+            ]);
+        }
 
         if (!empty($description = $block->getDescription())) {
             $this->interaction->writeln($description);

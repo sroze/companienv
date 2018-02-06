@@ -13,7 +13,7 @@ class Block
     /** @var Attribute[] */
     private $attributes;
 
-    public function __construct(string $title, string $description = '', array $variables = [], array $attributes = [])
+    public function __construct(string $title = '', string $description = '', array $variables = [], array $attributes = [])
     {
         $this->title = $title;
         $this->description = $description;
