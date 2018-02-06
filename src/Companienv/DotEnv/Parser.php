@@ -28,7 +28,7 @@ class Parser
                 } elseif ($block !== null) {
                     if (substr($line, 0, 2) == '#+') {
                         $block->addAttribute($this->parseAttribute(substr($line, 2)));
-                    } else {
+                    } else if (substr($line, 1, 1) == ' ') {
                         $block->appendToDescription(trim($line, '# '));
                     }
                 }
@@ -42,6 +42,10 @@ class Parser
                         $path,
                         $line
                     ));
+                }
+
+                if (null === $block) {
+                    $blocks[] = $block = new Block();
                 }
 
                 $block->addVariable(new Variable($sides[0], $sides[1]));
