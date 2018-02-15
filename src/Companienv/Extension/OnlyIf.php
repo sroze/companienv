@@ -34,7 +34,7 @@ class OnlyIf implements Extension
         }
 
         return $this->matchesCondition($companion, $attribute)
-             ? Extension::VARIABLE_REQUIRED
+             ? Extension::ABSTAIN
              : Extension::VARIABLE_SKIP;
     }
 
