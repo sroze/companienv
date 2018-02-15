@@ -7,6 +7,10 @@ use Companienv\DotEnv\Variable;
 
 interface Extension
 {
+    const VARIABLE_REQUIRED = 1;
+    const VARIABLE_SKIP = -1;
+    const ABSTAIN = 0;
+
     /**
      * Get the variable value, from a given source.
      *
@@ -23,14 +27,14 @@ interface Extension
     /**
      * Is this variable requiring a new value?
      *
-     * Return true to make sure this variable will be asked for a refreshed value.
+     * The return value is one of the ABSTAINT, VARIABLE_REQUIRED or VARIABLE_SKIP constants.
      *
      * @param Companion $companion
      * @param Block $block
      * @param Variable $variable
      * @param string|null $currentValue
      *
-     * @return bool
+     * @return int
      */
-    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null);
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null) : int;
 }

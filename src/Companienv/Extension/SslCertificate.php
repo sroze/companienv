@@ -64,7 +64,7 @@ class SslCertificate implements Extension
     /**
      * {@inheritdoc}
      */
-    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null) : int
     {
         if (null === ($attribute = $block->getAttribute('ssl-certificate', $variable))) {
             return false;
@@ -72,7 +72,10 @@ class SslCertificate implements Extension
 
         $fileSystem = $companion->getFileSystem();
 
-        return !$fileSystem->exists($block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue())
-            || !$fileSystem->exists($block->getVariable($attribute->getVariableNames()[1])->getValue());
+        return (
+            !$fileSystem->exists($block->getVariable($privateKeyVariableName = $attribute->getVariableNames()[0])->getValue())
+            || !$fileSystem->exists($block->getVariable($attribute->getVariableNames()[1])->getValue())
+        ) ? Extension::VARIABLE_REQUIRED
+            : Extension::ABSTAIN;
     }
 }
