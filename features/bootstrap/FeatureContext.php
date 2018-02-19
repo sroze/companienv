@@ -31,12 +31,13 @@ class FeatureContext implements Context
 
     /**
      * @When I run the companion with the following answers:
+     * @When I run the companion
      */
-    public function iRunTheCompanionWithTheFollowingAnswers(TableNode $table)
+    public function iRunTheCompanionWithTheFollowingAnswers(TableNode $table = null)
     {
         $this->companion = new Companion(
             $this->fileSystem,
-            $this->interaction = new InMemoryInteraction($table->getRowsHash()),
+            $this->interaction = new InMemoryInteraction($table !== null ? $table->getRowsHash() : []),
             new Chained(Application::defaultExtensions())
         );
 
@@ -73,6 +74,21 @@ class FeatureContext implements Context
             throw new \RuntimeException(sprintf(
                 'Found the following instead: %s',
                 function_exists('xdiff_string_diff') ? xdiff_string_diff($expected, $found) : $found
+            ));
+        }
+    }
+
+    /**
+     * @Then the companion's output should be empty
+     */
+    public function theCompanionsOutputShouldBeEmpty()
+    {
+        $found = strip_tags(trim($this->interaction->getBuffer()));
+
+        if (!empty($found)) {
+            throw new \RuntimeException(sprintf(
+                'Found the following instead: %s',
+                $found
             ));
         }
     }

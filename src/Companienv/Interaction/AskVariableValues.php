@@ -28,10 +28,12 @@ class AskVariableValues implements Extension
     /**
      * {@inheritdoc}
      */
-    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null) : int
     {
-        return $currentValue === null || (
-            $currentValue === '' && $variable->getValue() !== ''
-        );
+        return (
+            $currentValue === null || (
+                $currentValue === '' && $variable->getValue() !== ''
+            )
+        ) ? Extension::VARIABLE_REQUIRED : Extension::ABSTAIN;
     }
 }

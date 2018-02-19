@@ -114,7 +114,7 @@ class Companion
             foreach ($block->getVariables() as $variable) {
                 $currentValue = isset($variablesInFile[$variable->getName()]) ? $variablesInFile[$variable->getName()] : null;
 
-                if ($this->extension->isVariableRequiringValue($this, $block, $variable, $currentValue)) {
+                if ($this->extension->isVariableRequiringValue($this, $block, $variable, $currentValue) === Extension::VARIABLE_REQUIRED) {
                     $missingVariables[$variable->getName()] = new MissingVariable($variable, $currentValue);
                 }
             }

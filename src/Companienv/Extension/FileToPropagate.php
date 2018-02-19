@@ -44,12 +44,14 @@ class FileToPropagate implements Extension
     /**
      * {@inheritdoc}
      */
-    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null)
+    public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null) : int
     {
         if (null === ($attribute = $block->getAttribute('file-to-propagate', $variable))) {
-            return false;
+            return Extension::ABSTAIN;
         }
 
-        return !$companion->getFileSystem()->exists($variable->getValue());
+        return $companion->getFileSystem()->exists($variable->getValue())
+             ? Extension::VARIABLE_REQUIRED
+             : Extension::ABSTAIN;
     }
 }
