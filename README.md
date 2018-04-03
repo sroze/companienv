@@ -43,7 +43,7 @@ You can run Companienv automatically after `composer install` or `composer updat
 }
 ```
 
-By default, the file used as a template is `.env.dist` and the written file is `.env`. You can change these defaults within your composer.json file:
+By default, the file used as a template is `.env.dist` and the written file is `.env`. You can change these defaults within your `composer.json` file:
 
 
 ```json
