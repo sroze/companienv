@@ -43,20 +43,18 @@ You can run Companienv automatically after `composer install` or `composer updat
 }
 ```
 
-The ``.env`` will then be created or updated by the composer script, to match the structure of the dist file .env.dist by asking you the missing parameters.
-
-By default, the files are assumed to be .env.dist and .env. This can be changed in the configuration:
+By default, the file used as a template is `.env.dist` and the written file is `.env`. You can change these defaults within your composer.json file:
 
 
 ```json
 {
     "extra": {
         "companienv-parameters": [
-          {
+            {
                 "file": ".env.foo",
                 "dist-file": ".env.foo.dist"
-          }
-      ]
+            }
+        ]
     }
 }
 ```
