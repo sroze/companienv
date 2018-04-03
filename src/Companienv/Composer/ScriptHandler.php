@@ -20,9 +20,8 @@ class ScriptHandler
             $configs = [['file' => Application::defaultFile(), 'dist-file' => Application::defaultDistributionFile()]];
         }
 
+        $directory = getcwd();
         foreach ($configs as $config) {
-            $directory = getcwd();
-
             $companion = new Companion(
                 new NativePhpFileSystem($directory),
                 new InteractionViaComposer($event->getIO()),
