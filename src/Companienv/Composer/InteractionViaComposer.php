@@ -16,11 +16,23 @@ class InteractionViaComposer implements Interaction
 
     public function askConfirmation(string $question): bool
     {
+        if (!$this->io->isInteractive()) {
+            $this->writeln('Automatically confirmed in non-interactive mode');
+
+            return true;
+        }
+
         return $this->io->askConfirmation($question);
     }
 
     public function ask(string $question, string $default = null): string
     {
+        if (!$this->io->isInteractive()) {
+            $this->writeln(sprintf('Automatically returned "%s" in non-interactive mode', $default));
+
+            return $default;
+        }
+
         return $this->io->ask($question, $default);
     }
 
