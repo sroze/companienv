@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by sroze at 2018-07-16T08:40:35Z
+
+But if you do this... in development the plugin won't run either, right? 🤔
+
+---------------------------------------------------------------------------
+
+by roukmoute at 2018-07-16T08:43:29Z
+
+Of course !
+I must check if the file exist.
+
+But I don't like the name of this option, do you have any suggestion?
+
+`ignore-dist-file-if-not-exist`?! :smile:
+
+---------------------------------------------------------------------------
+
+by sroze at 2018-07-16T08:46:08Z
+
+Let's rewind. Why don't you want the plugin to run in production? Because AFAIK, you will load the `.env` file only if your environment variables are not already defined, right? For example, Symfony will not load the `.env` file if the `APP_ENV` environment variable is already defined.
+
+---------------------------------------------------------------------------
+
+by roukmoute at 2018-07-16T09:19:18Z
+
+So you prefer I use an equivalent like Symfony?
+I remove option and use only anything like `$_SERVER['APP_ENV']`.
+
+For me your idea is clearly better, more simple and logic.
+
+---------------------------------------------------------------------------
+
+by sroze at 2018-07-18T08:06:41Z
+
+What I meant was... why do you care if this script is run when your application won't use the `.env` file that was generated? 🤔
