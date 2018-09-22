@@ -23,7 +23,7 @@ class Block
 
     public function appendToDescription(string $string)
     {
-        $this->description .= ($this->description ? ' ' : '') . $string;
+        $this->description .= $string;
     }
 
     public function addVariable(Variable $variable)
