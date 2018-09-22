@@ -143,7 +143,7 @@ FIREBASE_SERVICE_ACCOUNT_PATH=/runtime/keys/firebase.json
 
 ### `rsa-pair` extension
 
-If the public/private key pair does not exists, Companienv will offer to generate one for the user.
+If the public/private key pair does not exist, Companienv will offer to generate one for the user.
 ```yaml
 #+rsa-pair(JWT_PRIVATE_KEY_PATH JWT_PUBLIC_KEY_PATH JWT_PRIVATE_KEY_PASS_PHRASE)
 JWT_PRIVATE_KEY_PATH=/runtime/keys/jwt-private.pem
@@ -154,7 +154,7 @@ JWT_PRIVATE_KEY_PASS_PHRASE=
 ### `ssl-certificate-extension`
 
 Similar to the [RSA keys pair](#rsa-pair-extension): Companienv will offer to generate a self-signed SSL certificate if
-it does not exists yet.
+it does not exist yet.
 
 ```yaml
 #+ssl-certificate(SSL_CERTIFICATE_PRIVATE_KEY_PATH SSL_CERTIFICATE_CERTIFICATE_PATH SSL_CERTIFICATE_DOMAIN_NAME)
