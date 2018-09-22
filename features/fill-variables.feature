@@ -107,21 +107,3 @@ Feature:
     """
     A_BASE64_VALUE=abc123=
     """
-
-  Scenario: It displays correctly boolean with 1 and 0
-    Given the file ".env.dist" contains:
-    """
-    ## Something
-    MY_VARIABLE=0
-    """
-    And the file ".env" contains:
-    """
-    MY_VARIABLE=
-    """
-    When I run the companion with the following answers:
-      | Let's fix this? (y)        | y       |
-      | MY_VARIABLE ? (0)          | 0       |
-    And the file ".env" should contain:
-    """
-    MY_VARIABLE=0
-    """
