@@ -15,10 +15,10 @@ class AskVariableValues implements Extension
     public function getVariableValue(Companion $companion, Block $block, Variable $variable)
     {
         $definedVariablesHash = $companion->getDefinedVariablesHash();
-        $defaultValue = $definedVariablesHash[$variable->getName()] ?? $variable->getValue() ?: $variable->getValue();
+        $defaultValue = ($definedVariablesHash[$variable->getName()] ?? $variable->getValue()) ?: $variable->getValue();
         $question = sprintf('<comment>%s</comment> ? ', $variable->getName());
 
-        if ($defaultValue) {
+        if ($defaultValue !== '') {
             $question .= '('.$defaultValue.') ';
         }
 
