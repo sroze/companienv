@@ -4,10 +4,10 @@ namespace Companienv;
 
 use Companienv\DotEnv\Block;
 use Companienv\DotEnv\MissingVariable;
+use Companienv\DotEnv\ValueFormatter;
 use Companienv\DotEnv\Parser;
 use Companienv\IO\FileSystem\FileSystem;
 use Companienv\IO\Interaction;
-use Jackiedo\DotenvEditor\DotenvFormatter;
 use Jackiedo\DotenvEditor\DotenvWriter;
 
 class Companion
@@ -89,7 +89,7 @@ class Companion
 
         $variablesInFileHash = $this->getDefinedVariablesHash();
 
-        $writer = new DotenvWriter(new DotenvFormatter());
+        $writer = new DotenvWriter(new ValueFormatter());
         $fileContents = $this->fileSystem->getContents($this->envFileName);
         $writer->setBuffer($fileContents);
 
