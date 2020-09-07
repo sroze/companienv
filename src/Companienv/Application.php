@@ -47,10 +47,12 @@ class Application extends ConsoleApplication
             {
                 $callable = $this->callable;
 
-                return $callable($input, $output);
+                $callable($input, $output);
+
+                return 0;
             }
         });
-        
+
         $this->setDefaultCommand('companion', true);
     }
 
