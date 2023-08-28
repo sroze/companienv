@@ -11,7 +11,7 @@ jobs:
     name: all tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@v2
       - name: "Install PHP"
         uses: shivammathur/setup-php@v2
@@ -19,6 +19,8 @@ jobs:
           php-version: "${{ matrix.php }}"
           coverage: none
           tools: composer:v2
+      - name: "Composer Install"
+        run: "composer install"
       - name: "Run Static Code Analysis"
         run: "composer ci:static"
       - name: "Run BDD Tests"
