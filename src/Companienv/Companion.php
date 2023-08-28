@@ -4,11 +4,13 @@ namespace Companienv;
 
 use Companienv\DotEnv\Block;
 use Companienv\DotEnv\MissingVariable;
-use Companienv\DotEnv\ValueFormatter;
 use Companienv\DotEnv\Parser;
 use Companienv\IO\FileSystem\FileSystem;
 use Companienv\IO\Interaction;
+use Jackiedo\DotenvEditor\DotenvReader;
 use Jackiedo\DotenvEditor\DotenvWriter;
+use Jackiedo\DotenvEditor\Workers\Formatters\Formatter;
+use Jackiedo\DotenvEditor\Workers\Parsers\ParserV3;
 
 class Companion
 {
@@ -30,7 +32,7 @@ class Companion
     public function fillGaps()
     {
         $missingVariables = $this->getVariablesRequiringValues();
-        if (count($missingVariables) == 0) {
+        if (count($missingVariables) === 0) {
             return;
         }
 
@@ -89,9 +91,18 @@ class Companion
 
         $variablesInFileHash = $this->getDefinedVariablesHash();
 
-        $writer = new DotenvWriter(new ValueFormatter());
-        $fileContents = $this->fileSystem->getContents($this->envFileName);
-        $writer->setBuffer($fileContents);
+        $writer = new DotenvWriter(new Formatter());
+        $reader = (new DotenvReader(new ParserV3()))->load($this->envFileName);
+        foreach ($reader->entries(true) as $entry) {
+            if (isset($entry['parsed_data'])) {
+                $writer->appendSetter(
+                    $entry['parsed_data']['key'],
+                    trim($entry['parsed_data']['value'], '"'),
+                    $entry['parsed_data']['comment'],
+                    $entry['parsed_data']['export']
+                );
+            }
+        }
 
         if (isset($variablesInFileHash[$name])) {
             $writer->updateSetter($name, $value);
@@ -99,7 +110,7 @@ class Companion
             $writer->appendSetter($name, $value);
         }
 
-        $this->fileSystem->write($this->envFileName, $writer->getBuffer());
+        $this->fileSystem->write($this->envFileName, $writer->getBuffer(false));
     }
 
     /**

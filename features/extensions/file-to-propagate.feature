@@ -8,7 +8,7 @@ Feature:
     """
     ## GitHub
     #+file-to-propagate(GITHUB_INTEGRATION_PRIVATE_KEY_PATH)
-    GITHUB_INTEGRATION_PRIVATE_KEY_PATH=/runtime/keys/github.pem
+    GITHUB_INTEGRATION_PRIVATE_KEY_PATH=/tmp/github.pem
     """
     And the file "/tmp/file-to-propagate" contains:
     """
@@ -19,9 +19,9 @@ Feature:
       | GITHUB_INTEGRATION_PRIVATE_KEY_PATH: What is the path of your downloaded file? | /tmp/file-to-propagate |
     And the file ".env" should contain:
     """
-    GITHUB_INTEGRATION_PRIVATE_KEY_PATH=/runtime/keys/github.pem
+    GITHUB_INTEGRATION_PRIVATE_KEY_PATH=/tmp/github.pem
     """
-    And the file "/runtime/keys/github.pem" should contain:
+    And the file "/tmp/github.pem" should contain:
     """
     SOMETHING
     """

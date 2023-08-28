@@ -4,6 +4,7 @@ namespace Companienv\IO\FileSystem;
 
 class NativePhpFileSystem implements FileSystem
 {
+
     private $root;
 
     public function __construct(string $root)
@@ -13,21 +14,33 @@ class NativePhpFileSystem implements FileSystem
 
     public function write($path, string $contents)
     {
-        file_put_contents($this->realpath($path), $contents);
+        $relative = $this->isRelativePath($path);
+        file_put_contents($this->isRelativePath($path) ? $this->realpath($path) : $path, $contents);
     }
 
-    public function exists($path, bool $relative = true)
+    public function exists($path)
     {
-        return file_exists($relative ? $this->realpath($path) : $path);
+        $relative = $this->isRelativePath($path);
+        return file_exists($this->isRelativePath($path) ? $this->realpath($path) : $path);
     }
 
-    public function getContents($path, bool $relative = true)
+    public function getContents($path)
     {
-        return file_get_contents($relative ? $this->realpath($path) : $path);
+        return file_get_contents($this->isRelativePath($path) ? $this->realpath($path) : $path);
+    }
+
+    public function delete($path)
+    {
+        return unlink($this->isRelativePath($path) ? $this->realpath($path) : $path);
     }
 
     public function realpath($path)
     {
-        return $this->root.DIRECTORY_SEPARATOR.$path;
+        return $this->root . DIRECTORY_SEPARATOR . $path;
+    }
+
+    protected function isRelativePath($path)
+    {
+        return substr($path, 0, 1) !== '/';
     }
 }

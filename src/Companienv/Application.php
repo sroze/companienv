@@ -50,7 +50,7 @@ class Application extends ConsoleApplication
                 return $callable($input, $output);
             }
         });
-        
+
         $this->setDefaultCommand('companion', true);
     }
 
@@ -64,6 +64,7 @@ class Application extends ConsoleApplication
             $input->getOption('dist-file')
         );
         $companion->fillGaps();
+        return 0;
     }
 
     public function registerExtension(Extension $extension)

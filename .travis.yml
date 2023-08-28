@@ -5,6 +5,9 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - 8.0
+  - 8.1
+  - 8.2
 
 matrix:
   include:
@@ -25,5 +28,5 @@ before_script:
   - if [ "$dependencies" = "lowest" ]; then travis_retry composer update --prefer-lowest --prefer-stable -n; fi;
 
 script:
-  - vendor/bin/phpspec run
-  - vendor/bin/behat -fprogress
+  - .build/bin/phpspec run
+  - .build/bin/behat -fprogress

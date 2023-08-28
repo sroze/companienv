@@ -1,5 +1,5 @@
 Feature:
-  In order to separate the variables into sensible blocks with explainations
+  In order to separate the variables into sensible blocks with explanations
   As a user
   I want to define my blocks in the .env.dist file
 
