@@ -1,4 +1,4 @@
 /.build
+/.idea
 /.env*
-/vendor
 /composer.lock
