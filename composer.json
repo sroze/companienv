@@ -24,7 +24,7 @@
   "require-dev": {
     "behat/behat": "^3.4",
     "composer/composer": "^1.0 || ^2.0",
-    "ergebnis/composer-normalize": "^2.28",
+    "ergebnis/composer-normalize": "^2.19",
     "phpspec/phpspec": "^4.3 || ^5.0 || ^6.0 || ^7.0",
     "phpstan/phpstan": "^1.10"
   },
