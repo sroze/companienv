@@ -22,6 +22,8 @@ class OnlyIf implements Extension
         if (!$this->matchesCondition($companion, $attribute)) {
             return $variable->getValue();
         }
+
+        return null;
     }
 
     /**

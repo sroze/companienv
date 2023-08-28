@@ -14,6 +14,14 @@ class File
     }
 
     /**
+     * @return string
+     */
+    public function getHeader(): string
+    {
+        return $this->header;
+    }
+
+    /**
      * @return Block[]
      */
     public function getBlocks(): array

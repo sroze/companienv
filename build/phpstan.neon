@@ -1,0 +1,11 @@
+parameters:
+  level: 5
+
+  paths:
+    - %currentWorkingDirectory%/spec
+    - %currentWorkingDirectory%/src
+    - %currentWorkingDirectory%/tests
+
+#  ignoreErrors:
+#    - '#Call to method .* on an unknown class .*PxRegisterUser.*#'
+#    - '#(Parameter|Property) .* has (invalid type|unknown class) .*PxRegisterUser(Repository)?.*#'

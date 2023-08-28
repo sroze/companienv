@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron:  '5 5 * * *'
+
+jobs:
+  testsuite:
+    name: all tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php }}"
+          coverage: none
+          tools: composer:v2
+      - name: "Run Static Code Analysis"
+        run: "composer ci:static"
+      - name: "Run BDD Tests"
+        run: "composer ci:test:behat"
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2' ]

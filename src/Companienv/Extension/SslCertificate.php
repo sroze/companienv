@@ -44,12 +44,9 @@ class SslCertificate implements Extension
         $certificateKeyPath = $block->getVariable($certificateVariableName = $attribute->getVariableNames()[1])->getValue();
 
         try {
-            (new Process(sprintf(
-                'openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout %s -out %s -subj "/C=SS/ST=SS/L=SelfSignedCity/O=SelfSignedOrg/CN=%s"',
-                $companion->getFileSystem()->realpath($privateKeyPath),
-                $companion->getFileSystem()->realpath($certificateKeyPath),
-                $domainName
-            )))->mustRun();
+            (new Process([
+                'openssl', 'req', '-x509', '-nodes', '-days', '3650', '-newkey', 'rsa:2048', '-keyout', $companion->getFileSystem()->realpath($privateKeyPath), '-out', $companion->getFileSystem()->realpath($certificateKeyPath), '-subj', '"/C=SS/ST=SS/L=SelfSignedCity/O=SelfSignedOrg/CN=' . $domainName . '"'
+            ]))->mustRun();
         } catch (\Symfony\Component\Process\Exception\RuntimeException $e) {
             throw new \RuntimeException('Could not have generated the SSL certificate: '.$e->getMessage(), $e->getCode(), $e);
         }
@@ -67,7 +64,7 @@ class SslCertificate implements Extension
     public function isVariableRequiringValue(Companion $companion, Block $block, Variable $variable, string $currentValue = null) : int
     {
         if (null === ($attribute = $block->getAttribute('ssl-certificate', $variable))) {
-            return false;
+            return Extension::ABSTAIN;
         }
 
         $fileSystem = $companion->getFileSystem();

@@ -22,7 +22,6 @@ class FeatureContext implements Context
 
     public function __construct()
     {
-//        $this->fileSystem = new InMemoryFileSystem();
         $this->fileSystem = new NativePhpFileSystem(getcwd());
     }
 
@@ -103,15 +102,6 @@ class FeatureContext implements Context
      */
     public function cleanTestFilesBeforeScenario(BeforeScenarioScope $scope)
     {
-        $this->cleanTestFiles();
-    }
-
-    /**
-     * @AfterFeature
-     */
-    public function cleanTestFilesAfterFeature(AfterFeatureScope $scope)
-    {
-        var_dump('foo');
         $this->cleanTestFiles();
     }
 

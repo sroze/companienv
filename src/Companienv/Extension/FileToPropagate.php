@@ -27,11 +27,11 @@ class FileToPropagate implements Extension
         }
 
         $downloadedFilePath = $companion->ask('<comment>'.$variable->getName().'</comment>: What is the path of your downloaded file? ');
-        if (!$fileSystem->exists($downloadedFilePath, false)) {
+        if (!$fileSystem->exists($downloadedFilePath)) {
             throw new \InvalidArgumentException(sprintf('The file "%s" does not exist', $downloadedFilePath));
         }
 
-        if (false === $fileSystem->write($filename, $fileSystem->getContents($downloadedFilePath, false))) {
+        if (false === $fileSystem->write($filename, $fileSystem->getContents($downloadedFilePath))) {
             throw new \RuntimeException(sprintf(
                 'Unable to write into "%s"',
                 $filename

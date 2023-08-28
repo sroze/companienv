@@ -1,13 +1,13 @@
 {
   "name": "sroze/companienv",
   "description": "Companion for .env files",
+  "license": "MIT",
+  "type": "library",
   "keywords": [
     "dotenv",
     ".env",
     "configuration"
   ],
-  "type": "library",
-  "license": "MIT",
   "authors": [
     {
       "name": "Samuel ROZE",
@@ -16,10 +16,17 @@
   ],
   "require": {
     "php": ">=7.0",
-    "symfony/console": "~3.4 || ~4.0 || ~5.0 || ~6.0",
-    "symfony/dotenv": "~3.4 || ~4.0 || ~5.0 || ~6.0",
-    "symfony/process": "~3.4 || ~4.0 || ~5.0 || ~6.0",
-    "jackiedo/dotenv-editor": "~2.0"
+    "jackiedo/dotenv-editor": "^2.0",
+    "symfony/console": "^3.4 || ^4.0 || ^5.0 || ^6.0",
+    "symfony/dotenv": "^3.4 || ^4.0 || ^5.0 || ^6.0",
+    "symfony/process": "^3.4 || ^4.0 || ^5.0 || ^6.0"
+  },
+  "require-dev": {
+    "behat/behat": "^3.4",
+    "composer/composer": "^1.0 || ^2.0",
+    "ergebnis/composer-normalize": "^2.28",
+    "phpspec/phpspec": "^4.3 || ^5.0 || ^6.0 || ^7.0",
+    "phpstan/phpstan": "^1.10"
   },
   "autoload": {
     "psr-0": {
@@ -31,20 +38,52 @@
       "Companienv": "tests/"
     }
   },
-  "config": {
-    "bin-dir": ".build/bin",
-    "vendor-dir": ".build/vendor",
-    "preferred-install": {
-      "*": "dist"
-    }
-  },
   "bin": [
     "bin/companienv"
   ],
-  "require-dev": {
-    "behat/behat": "^3.4",
-    "phpspec/phpspec": "^4.3 || ^5.0 || ^6.0 || ^7.0",
-    "phpstan/phpstan": "^1.10",
-    "composer/composer": "^1.0"
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
+    },
+    "bin-dir": ".build/bin",
+    "preferred-install": {
+      "*": "dist"
+    },
+    "vendor-dir": ".build/vendor"
+  },
+  "scripts": {
+    "ci": [
+      "@ci:static",
+      "@ci:test"
+    ],
+    "ci:composer:normalize": "@composer normalize --no-check-lock --dry-run",
+    "ci:composer:psr-verify": "@composer dumpautoload --optimize --strict-psr",
+    "ci:php": [
+      "@ci:php:lint",
+      "@ci:php:stan"
+    ],
+    "ci:php:cs-fixer": "./.build/bin/php-cs-fixer fix --config ./build/php-cs-fixer.php -v --dry-run --using-cache no --diff",
+    "ci:php:lint": "find .*.php *.php spec src tests -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
+    "ci:php:stan": "./.build/bin/phpstan analyse -c ./build/phpstan.neon --no-progress",
+    "ci:static": [
+      "@ci:composer:normalize",
+      "@ci:php:lint",
+      "@ci:php:stan"
+    ],
+    "ci:test": [
+      "@ci:test:behat"
+    ],
+    "ci:test:behat": "./.build/bin/behat --strict --stop-on-failure"
+  },
+  "scripts-descriptions": {
+    "ci": "Runs all dynamic and static code checks.",
+    "ci:composer:normalize": "Checks the composer.json.",
+    "ci:composer:psr-verify": "Verifies PSR-4 namespace correctness.",
+    "ci:php": "Runs all static checks for the PHP files.",
+    "ci:php:lint": "Lints the PHP files for syntax errors.",
+    "ci:php:stan": "Checks the PHP types using PHPStan.",
+    "ci:static": "Runs all static code checks (syntax, style, types).",
+    "ci:test": "Runs all tests.",
+    "ci:test:behat": "Runs the Behat tests."
   }
 }
